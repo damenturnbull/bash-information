@@ -1,0 +1,129 @@
+#!/bin/bash
+# s3418562 DAMEN TURNBULL 
+
+ECHO=/bin/echo
+UNAME=/bin/uname
+PS=/bin/ps
+WC=/usr/bin/wc
+LESS=/usr/bin/less
+DU=/usr/bin/du
+SORT=/bin/sort
+HEAD=/usr/bin/head
+PRINTF=/usr/bin/printf
+
+# -------------------------
+# Store directory argument for later use
+DIRARG=$2;
+
+# -------------------------
+# -k 
+# Prints basic information about the kernel
+function k {
+	$UNAME -srv
+}
+
+# -------------------------
+# -p
+# Prints the number of processes for the currently logged in user
+function p {
+     $PS -u $USER | $WC -l
+}
+
+# -------------------------
+# -u option
+# Prints information about users in /etc/passwd
+function u {
+    $LESS /etc/passwd |
+    	while read p; do
+            IFS=':' read -a tokens <<< "$p"
+            $PRINTF '%-12s%s\n' "Username:" "${tokens[0]}"
+            $PRINTF '%-12s%s\n' "UserID:" "${tokens[2]}"
+            $PRINTF '%-12s%s\n' "GroupID:" "${tokens[3]}"
+            $PRINTF '%-12s%s\n' "Home:" "${tokens[5]}"
+            $PRINTF '%-12s%s\n\n' "Shell:" "${tokens[6]}"
+    	done;
+}
+
+# -------------------------
+# -g option
+# Prints a list of users, and all groups belonging to that user
+function g {
+    $LESS /etc/group | 
+        while read p; do
+            IFS=':' read -a tokens <<< "$p"
+            $ECHO -e "Username:\t""${tokens[0]}"
+            $ECHO -e "Groups:\t\t""${tokens[3]}""\n"
+        done;
+}
+
+# -------------------------
+# -l option
+# Prints a list of top 10 largest files location in the user's home folder
+function l {
+    find ~/. -printf '%s:%p\n' | $SORT -nr | head |
+        while read p; do
+            IFS=':' read -a tokens <<< "$p"
+            printf '%-12s%s\n' "${tokens[0]}" "${tokens[1]##*/}"
+        done;
+}
+
+# -------------------------
+# -d option
+# Counts all files in a specified directory
+function d {
+    if [ -d $1 ] && [ ! -z $1 ]
+    then
+        find $1 -type f | wc -l  
+    else
+        $ECHO "Error: Argument must be a directory."
+    fi
+}
+
+# -------------------------
+# -v option
+# Using SHELL variables, prints username, home, shell and path
+function v {
+    $PRINTF '%-12s%s\n' "Username:" $USER
+    $PRINTF '%-12s%s\n' "Home:" $HOME
+    $PRINTF '%-12s%s\n' "Shell:" $SHELL
+    $PRINTF '%-12s\n%s\n' "Path:" $PATH
+}
+
+# -------------------------
+# -a option
+# Run all functions
+function a {
+    k
+    $PRINTF "\n"
+    p
+    $PRINTF "\n"
+    u
+    $PRINTF "\n"
+    g
+    $PRINTF "\n"
+    l
+    $PRINTF "\n"
+    d $DIRARG
+    $PRINTF "\n"
+    v
+}
+
+# -------------------------
+# Process command options
+# -------------------------
+while getopts kpugldva name
+do
+    case $name in
+        k)k;;
+        p)p;;
+        u)u;;
+        g)g;;
+        l)l;;
+        d)d $DIRARG;;
+        v)v;;
+        a)a $DIRARG;;
+        *)echo "Invalid option"
+    esac
+done
+
+exit 0
