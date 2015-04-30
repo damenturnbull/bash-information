@@ -1,28 +1,60 @@
-# A collection of helpful bash scripts
+# bash-information
 
-# information
-# gives information about the Kernel and environment
+A small script that returns information about the current Kernel and system.
 
-# -k
-# Prints basic information about the kernel
+#### 
+    $ ./information -[option]
 
-# -p
-# Prints the number of processes for the currently logged in user
+### -k
 
-# -u option
-# Prints information about users in /etc/passwd
+Prints basic information about the kernel
 
-# -g option
-# Prints a list of users, and all groups belonging to that user
+#### 
+    $ ./information -k
 
-# -l option
-# Prints a list of top 10 largest files location in the users home folder
+### -p
 
-# -d option
-# Counts all files in a specified directory
+Prints the number of processes for the currently logged in user
+#### 
+    $ ./information -p
 
-# -v option
-# Using SHELL variables, prints username, home, shell and path
+### -u
 
-# -a option
-# Run all functions
+Prints information about users in /etc/passwd
+#### 
+    $ ./information -u
+
+
+### -g
+
+Prints a list of users, and all groups belonging to that user
+#### 
+    $ ./information -g
+
+
+### -l
+
+Prints a list of top 10 largest files location in the users home folder
+#### 
+    $ ./information -l
+
+
+### -d
+
+Counts all files in a specified directory
+#### 
+    $ ./information -d
+
+
+### -v
+
+Using SHELL variables, prints username, home, shell and path
+#### 
+    $ ./information -v
+
+
+### -a
+
+Run all functions
+#### 
+    $ ./information -a
